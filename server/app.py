@@ -1,23 +1,32 @@
-#!/usr/bin/env python3
+import os
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
-# Standard library imports
+from models import User, Observation, Discussion, SpeciesProfile
+app = Flask(__name__)
 
-# Remote library imports
-from flask import request
-from flask_restful import Resource
+# Define the base directory
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
-# Local imports
-from config import app, db, api
-# Add your model imports
+# Check if the directory exists and if not, create it
+db_directory = os.path.join(BASE_DIR, 'data')
+if not os.path.exists(db_directory):
+    os.makedirs(db_directory)
 
+# Configure the SQLAlchemy Database URI
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(db_directory, 'app.db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Views go here!
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
+# ... (rest of your code)
+
 
 @app.route('/')
 def index():
     return '<h1>Project Server</h1>'
 
-
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
-
