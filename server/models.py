@@ -5,9 +5,11 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 
 ############
-likes = db.Table('likes',
-db.Column('user_id', db.Integer,db.ForeignKey('users.id'), primary_key=True),
-db.Column('observation_id, db.Intger, db.ForeignKey('observations.id'), primary_key=True)
+likes = db.Table(
+    'likes',
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
+    db.Column('observation_id', db.Integer, db.ForeignKey('observations.id'), primary_key=True),
+    extend_existing=True
 )
 
 class Observation(db.Model):
@@ -18,7 +20,7 @@ class Observation(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user = db.relationship("User", back_populates="observations")
-    likes - db.relationship('Like', back_populates='observations')
+    likes = db.relationship('Like', back_populates='observations')
 
 class Discussion(db.Model):
     __tablename__ = 'discussions'
@@ -42,8 +44,8 @@ class User (db.Model):
     likes = db.relationship('Like', back_populates='user')
 
 class Like (db.Model):
-    __table__='likes'
-      id = db.Column(db.Integer, primary_key=True)
+    __tablename__='likes'
+    id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     discussion_id = db.Column(db.Integer, db.ForeignKey('discussions.id'), nullable=True)
     observation_id = db.Column(db.Integer, db.ForeignKey('observations.id'), nullable=True)
