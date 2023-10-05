@@ -1,54 +1,40 @@
-from sqlalchemy_serializer import SerializerMixin
-from sqlalchemy.ext.associationproxy import association_proxy
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime 
+from extensions import db
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
 
-from config import db
-
-# Models go here!
-
-from flask_login import UserMixin
-from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime
+############
 
 
-class User(db.Model, UserMixin):
-    __tablename__ = 'users'
-
-    user_id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), index=True, unique=True)
-    email = db.Column(db.String(120), index=True, unique=True)
-    password_hash = db.Column(db.String(128))
-    role = db.Column(db.String(64))
-
-    # Used to set hashed password
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
-
-    # Used to check hashed password
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
-    
 class Observation(db.Model):
     __tablename__ = 'observations'
-
-    observation_id = db.Column(db.Integer, primary_key=True)
-    species = db.Column(db.String(64))
-    locaation = db.Column(db.String(64))
-    behavior = db.Column(db.String(64))
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    images = db.Column(db.String(128))
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user = db.relationship("User", back_populates="observations")
 
 class Discussion(db.Model):
-    __Tablename__ = 'discussions'
+    __tablename__ = 'discussions'
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    user_id = db.Column(db.Integer, ForeignKey('users.id'), nullable=False)
+    observation_id = db.Column(db.Integer, ForeignKey('observations.id'), nullable=False)
+    user = db.relationship("User", back_populates="discussions")
 
-    discussion_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    observation_id = db.Column(db.Integer, db.ForeignKey('observations.observation_id'))
-    mssage = db.Column(db.String(128))
+class User (db.Model):
+    __tablename__='users'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(120), nullable=False)
+    observations = relationship("Observation", back_populates="user")
+    discussions = relationship("Discussion", back_populates="user")
 
-class SpeciesProfile(db.Model):
-    __tablename__ = 'species_profiles'
 
-    profile_id = db.Column(db.Integer, primary_key=True)
-    species_name = db.Column(db.String(64))
-    description = db.Column(db.String(128))
-    images = db.Column(db.String(128))
+    def __repr__(self):
+        return f'<User {self.username}>'
