@@ -1,5 +1,6 @@
 import React from 'react'
 import { useFormik } from 'formik'
+import { useHistory } from 'react-router-dom';
 
 const validate = values => {
     const errors = {};
@@ -31,6 +32,12 @@ const RegisterPage = () => {
             console.log(values);
         },
 });
+
+const history = useHistory();
+
+const goBack = () => {
+    history.push('/')
+};
 
     return (
         <form onSubmit={formik.handleSubmit}>
@@ -74,6 +81,7 @@ const RegisterPage = () => {
         />
             {formik.errors.confrimPassword ? <div>{formik.errors.confirmPassword}</div> : null}
             
+            <button type="button" onClick={goBack}>Back</button>
             <button type="submit">Submit</button>
         </form>
     );
