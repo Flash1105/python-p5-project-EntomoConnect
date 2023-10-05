@@ -5,7 +5,10 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 
 ############
-
+likes = db.Table('likes',
+db.Column('user_id', db.Integer,db.ForeignKey('users.id'), primary_key=True),
+db.Column('observation_id, db.Intger, db.ForeignKey('observations.id'), primary_key=True)
+)
 
 class Observation(db.Model):
     __tablename__ = 'observations'
@@ -15,6 +18,7 @@ class Observation(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user = db.relationship("User", back_populates="observations")
+    likes - db.relationship('Like', back_populates='observations')
 
 class Discussion(db.Model):
     __tablename__ = 'discussions'
@@ -25,6 +29,7 @@ class Discussion(db.Model):
     user_id = db.Column(db.Integer, ForeignKey('users.id'), nullable=False)
     observation_id = db.Column(db.Integer, ForeignKey('observations.id'), nullable=False)
     user = db.relationship("User", back_populates="discussions")
+    likes = db.relationship('Like', back_populates='discussions')
 
 class User (db.Model):
     __tablename__='users'
@@ -34,6 +39,18 @@ class User (db.Model):
     password = db.Column(db.String(120), nullable=False)
     observations = relationship("Observation", back_populates="user")
     discussions = relationship("Discussion", back_populates="user")
+    likes = db.relationship('Like', back_populates='user')
+
+class Like (db.Model):
+    __table__='likes'
+      id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    discussion_id = db.Column(db.Integer, db.ForeignKey('discussions.id'), nullable=True)
+    observation_id = db.Column(db.Integer, db.ForeignKey('observations.id'), nullable=True)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    user = db.relationship('User', back_populates='likes')
+    discussion = db.relationship('Discussion', back_populates='likes')
+    observation = db.relationship('Observation', back_populates='likes')
 
 
     def __repr__(self):
