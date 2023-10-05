@@ -44,6 +44,36 @@ const RegisterPage = () => {
             />
             {formik.errors.username ? <div>{formik.errors.username}</div> : null}
 
+            <label htmlFor="email">Email</label> 
+            <input
+                id="email"
+                name="email"
+                type="email"
+                onChange={formik.handleChange}
+                value={formik.values.email}
+            />
+            {formik.errors.email ? <div>{formik.errors.email}</div> : null}
+
+            <label htmlFor="password">Password</label>
+            <input
+                id="password"
+                name="password"
+                type="password"
+                onChange={formik.handleChange}
+                value={formik.values.password}
+            />
+            {formik.errors.password ? <div>{formik.errors.password}</div> :null}
+
+            <label htmlFor="confirmPassword">Confirm Password</label>
+            <input
+            id="confirmPassword"
+            name="confirmPassword"
+            type="password"
+            onChange={formik.handleChange}
+            value={formik.values.confrimPassword}
+        />
+            {formik.errors.confrimPassword ? <div>{formik.errors.confirmPassword}</div> : null}
+            
             <button type="submit">Submit</button>
         </form>
     );
