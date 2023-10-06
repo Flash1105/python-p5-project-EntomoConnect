@@ -20,6 +20,8 @@ const validate = values => {
 };
 
 const RegisterPage = () => {
+    const history = useHistory();
+    
     const formik = useFormik({
         initialValues: {
             username: '',
@@ -28,13 +30,30 @@ const RegisterPage = () => {
             confirmPassword:''
         },
         validate,
-        onSubmit: values => {
+        onSubmit: async values => {
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(values)
+                });
+                const data = await response.json();
 
-            console.log(values);
-        },
+                if(response.ok) {
+                    console.log(data.message);
+                    history.push('/login');
+                } else {
+                    console.error(data.error);
+                }
+            } catch (error) {
+                console.error('There was an error', error);
+            }
+
+            
+        }
 });
-
-const history = useHistory();
 
 const goBack = () => {
     history.push('/')
