@@ -8,7 +8,8 @@ from flask_cors import CORS
 #########################
 
 app = Flask(__name__, static_folder='../client/build', static_url_path='/')
-CORS(app)
+app.debug = True
+CORS(app, resources={r"/*": {"origins": "*"}})
 app.config.from_object(Config)
 
 db.init_app(app)
