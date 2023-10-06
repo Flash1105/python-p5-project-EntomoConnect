@@ -6,15 +6,20 @@ from models import User
 
 #########################
 
-app = Flask(__name__, template_folder='client/src/pages')
+app = Flask(__name__, static_folder='../client/build', static_url_path='/')
 app.config.from_object(Config)
 
 db.init_app(app)
 migrate = Migrate(app, db)
 
 @app.route('/')
-def home():
-    return render_template('index.html')
+def index():
+    return app.send_static_file('index.html')
+
+@app.route('<path:path>')
+def catch_all(path):    
+    return app.send_static_file('index.html')
+
 
 
 @app.route('/api/register', methods = ['POST'])
