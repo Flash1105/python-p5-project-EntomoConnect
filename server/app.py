@@ -3,10 +3,12 @@ from config import Config
 from flask_migrate import Migrate
 from extensions import db
 from models import User
+from flask_cors import CORS
 
 #########################
 
 app = Flask(__name__, static_folder='../client/build', static_url_path='/')
+CORS(app)
 app.config.from_object(Config)
 
 db.init_app(app)
