@@ -43,7 +43,7 @@ const RegisterPage = () => {
 
                 if(response.ok) {
                     console.log(data.message);
-                    history.push('/login');
+                    history.push('/dashboard');
                 } else {
                     console.error(data.error);
                 }
