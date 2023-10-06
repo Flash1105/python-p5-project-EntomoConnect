@@ -16,7 +16,7 @@ migrate = Migrate(app, db)
 def index():
     return app.send_static_file('index.html')
 
-@app.route('<path:path>')
+@app.route('/<path:path>')
 def catch_all(path):    
     return app.send_static_file('index.html')
 
@@ -25,6 +25,9 @@ def catch_all(path):
 @app.route('/api/register', methods = ['POST'])
 def register():
     data = request.json 
+
+    if not data:
+        return jsonify({'message': 'No input data provided'}), 400
 
     username = data.get('username')
     email = data.get('email')
