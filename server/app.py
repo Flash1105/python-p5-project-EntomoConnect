@@ -1,14 +1,16 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify
 from config import Config
 from flask_migrate import Migrate
 from extensions import db
 from models import User
 from flask_cors import CORS
+from flask_bcrypt import Bcrypt
 
 #########################
 
 app = Flask(__name__, static_folder='../client/build', static_url_path='/')
 app.debug = True
+bcrypt = Bcrypt(app)
 CORS(app, resources={r"/*": {"origins": "*"}})
 app.config.from_object(Config)
 
@@ -24,7 +26,6 @@ def catch_all(path):
     return app.send_static_file('index.html')
 
 
-
 @app.route('/api/register', methods = ['POST'])
 def register():
     data = request.json 
@@ -35,6 +36,7 @@ def register():
     username = data.get('username')
     email = data.get('email')
     password = data.get('password')
+    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
     existing_user = User.query.filter_by(username=username).first()
     existing_email = User.query.filter_by(email=email).first()
@@ -44,7 +46,7 @@ def register():
     if existing_email:
         return jsonify({'error': 'Email already exists'}), 400
     
-    new_user = User(username=username, email=email, password=password)
+    new_user = User(username=username, email=email, password=hashed_password)
 
     db.session.add(new_user)
     db.session.commit()
