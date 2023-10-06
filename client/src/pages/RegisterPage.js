@@ -29,6 +29,7 @@ const RegisterPage = () => {
         },
         validate,
         onSubmit: values => {
+
             console.log(values);
         },
 });
@@ -77,9 +78,9 @@ const goBack = () => {
             name="confirmPassword"
             type="password"
             onChange={formik.handleChange}
-            value={formik.values.confrimPassword}
+            value={formik.values.confirmPassword}
         />
-            {formik.errors.confrimPassword ? <div>{formik.errors.confirmPassword}</div> : null}
+            {formik.errors.confirmPassword ? <div>{formik.errors.confirmPassword}</div> : null}
             
             <button type="button" onClick={goBack}>Back</button>
             <button type="submit">Submit</button>
