@@ -1,63 +1,74 @@
 
-import React from 'react';
+
+import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import { useHistory } from 'react-router-dom';
 
-const validate = values => {
-    const errors = {};
-    if (!values.username) {
-        errors.username = 'Required';
-    }
-    if (!values.email) {
-        errors.email = 'Required';
-    }
-    return errors;
-};
+const LoginPage = () => {
+    const [error, setError] = useState('');
+    const history = useHistory();
 
-const LoginPage = () => { 
     const formik = useFormik({
         initialValues: {
             username: '',
-            email: ''
+            password: '', 
         },
-        validate, 
-        onSubmit: values => {
-            console.log(values);
+        onSubmit: async (values) => {
+            try {
+            
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(values),
+                });
+
+                if (response.status === 200) {
+                    history.push('/dashboard');
+                } else {
+                    setError('Invalid username or password');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                setError('There was an error during login');
+            }
         },
     });
 
-    const history = useHistory();
-
-    const goBack = () => {
-        history.push('/');
-    };
-
     return (
-        <form onSubmit={formik.handleSubmit}>
-            <label htmlFor="username">Username</label>
-            <input
-                id="username"
-                name="username"
-                type="text"
-                onChange={formik.handleChange}
-                value={formik.values.username}
-            />
-            {formik.errors.username ? <div>{formik.errors.username}</div> : null}
+        <div>
+            <h1>Login</h1>
+            <form onSubmit={formik.handleSubmit}>
+                <div>
+                    <label htmlFor="username">Username</label>
+                    <input
+                        id="username"
+                        name="username"
+                        type="text"
+                        onChange={formik.handleChange}
+                        value={formik.values.username}
+                    />
+                </div>
 
-            <label htmlFor="email">Email</label>
-            <input
-                id="email"
-                name="email"
-                type="email"
-                onChange={formik.handleChange}
-                value={formik.values.email}
-            />
-            {formik.errors.email ? <div>{formik.errors.email}</div> : null}
+                <div>
+                    <label htmlFor="password">Password</label>
+                    <input
+                        id="password"
+                        name="password"
+                        type="password" 
+                        onChange={formik.handleChange}
+                        value={formik.values.password}
+                    />
+                </div>
 
-            <button type="button" onClick={goBack}>Back</button>
-            <button type="submit">Submit</button>
-        </form>
+                <button type="submit">Login</button>
+            </form>
+
+            {error && <div className="error">{error}</div>}
+        </div>
     );
 };
 
 export default LoginPage;
+
