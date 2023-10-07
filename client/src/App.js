@@ -9,7 +9,6 @@ import LoginPage from './pages/LoginPage';
 const App = () => {
   return (
     <Router>
-      
       <Route path="/" exact component={HomePage} />
       <Route path="/register" component={RegisterPage} />
       <Route path="/login" component={LoginPage} />
