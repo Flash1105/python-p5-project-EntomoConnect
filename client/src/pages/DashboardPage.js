@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const DashboardPage = () => {
   const [observations, setObservations] = useState([]);
@@ -39,9 +40,12 @@ const DashboardPage = () => {
 
   return (
     <div>
-      <h1>Dashboard</h1>
+      <h1>Welcome </h1>
       <div>
         <h2>Observations.  this is where observations will be present</h2>
+        <Link to="/observations-form">
+          <button>Add New Observation</button>
+        </Link>
         {observations.map((observation) => (
           <div key={observation.id}>
             <h3>{observation.title}</h3>
