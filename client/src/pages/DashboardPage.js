@@ -6,8 +6,7 @@ const DashboardPage = () => {
   const [discussions, setDiscussions] = useState([]);
 
   useEffect(() => {
-    fetchObservations();
-    fetchDiscussions();
+
   }, []);
 
   const fetchObservations = async () => {
@@ -52,6 +51,7 @@ const DashboardPage = () => {
             <p>{observation.content}</p>
           </div>
         ))}
+          
       </div>
       <div>
         <h2>Discussions.  this is where you can see comments</h2>
