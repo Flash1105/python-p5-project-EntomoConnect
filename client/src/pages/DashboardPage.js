@@ -55,6 +55,9 @@ const DashboardPage = () => {
       </div>
       <div>
         <h2>Discussions.  this is where you can see comments</h2>
+        <Link to="/discussions-form">
+          <button>Add New Discussion</button>
+        </Link>
         {discussions.map((discussion) => (
           <div key={discussion.id}>
             <p>{discussion.content}</p>
