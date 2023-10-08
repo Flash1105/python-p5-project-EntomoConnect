@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 
 
 function ObservationForm() {
+    const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     
 
@@ -12,20 +13,22 @@ function ObservationForm() {
         e.preventDefault();
 
         const observationData = {
-          
+            title: title,
             content: content,
-    }
+    };
+
         try {
             const response = await fetch('/api/observations', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ observationData }),
+                body: JSON.stringify( observationData ),
             });
 
             if (response.status === 201) {
-                console.log('observation created successfully');              
+                console.log('observation created successfully');    
+                setTitle('');          
                 setContent('');
                 
             const newObservation = await response.json();
@@ -44,6 +47,14 @@ function ObservationForm() {
             <h2>Create a New Observation</h2>
             <form onSubmit={handleSubmit}>
                 <div>
+                    <input
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        placeholder="Title of observation"
+                        required
+                    />
+                </div>
+                <div>    
                     <textarea
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
