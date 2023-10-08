@@ -13,7 +13,15 @@ const DashboardPage = () => {
     fetchObservations();
     fetchDiscussions();
     setIsLoggedIn(location.state?.isLoggedIn || true);
-  }, [location.state]);
+
+  }, [history, location.state?.isLoggedIn]);
+  
+    const searchParams = new URLSearchParams(location.search);
+    if (searchParams.get('newObservation') === 'true' || searchParams.get('newDiscussion') === 'true') {
+      history.replace ('/dashboard');
+    }
+
+   
 
   const handleLogout = () => {
       
@@ -23,7 +31,7 @@ const DashboardPage = () => {
 
   const fetchObservations = async () => {
     try {
-      const response = await fetch('/api/observations');
+      const response = await fetch('http://127.0.0.1:5555/api/observations');
       if (response.ok) {
         const data = await response.json();
         setObservations(data);
@@ -37,7 +45,7 @@ const DashboardPage = () => {
     
   const fetchDiscussions = async () => {
     try {
-      const response = await fetch('/api/discussions');
+      const response = await fetch('/http://127.0.0.1:5555/api/discussions');
       if (response.ok) {
         const data = await response.json();
         setDiscussions(data);
@@ -61,7 +69,7 @@ const DashboardPage = () => {
       )}
       </div>
       <div>
-        <h2>Observations.  this is where observations will be present</h2>
+        <h2>Observations.  this is where observations will be submitted</h2>
         <Link to="/observations-form">
           <button>Add New Observation</button>
         </Link>
@@ -74,7 +82,7 @@ const DashboardPage = () => {
           
       </div>
       <div>
-        <h2>Discussions.  this is where you can see comments</h2>
+        <h2>Discussions.  this is where you can write comments</h2>
         <Link to="/discussions-form">
           <button>Add New Discussion</button>
         </Link>
