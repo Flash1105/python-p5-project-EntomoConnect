@@ -6,7 +6,7 @@ from models import User, Observation, Discussion
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 
-app = Flask(__name__, static_folder='../client/build', static_url_path='/')
+app = Flask(__name__)
 bcrypt = Bcrypt(app)
 CORS(app, resources={r"/*": {"origins": "*"}})
 app.config.from_object(Config)
@@ -14,13 +14,6 @@ app.config.from_object(Config)
 db.init_app(app)
 migrate = Migrate(app, db)
 
-@app.route('/')
-def index():
-    return app.send_static_file('index.html')
-
-@app.route('/<path:path>')
-def catch_all(path):    
-    return app.send_static_file('index.html')
 
 @app.route('/api/register', methods=['POST'])
 def register():
