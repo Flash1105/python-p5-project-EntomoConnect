@@ -1,7 +1,8 @@
 from datetime import datetime 
 from extensions import db
 from sqlalchemy import ForeignKey, PrimaryKeyConstraint
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, validates
+import re
 
 ############
 
@@ -13,6 +14,12 @@ class Observation(db.Model):
     content = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    @validates('title')
+    def validate_title_type(self, key, title):
+        assert isinstance(title, str), "Title must be a string"
+        return title
+    
     user = db.relationship("User", back_populates="observations", primaryjoin= lambda: User.id == Observation.user_id)
     likes = db.relationship('Like', back_populates='observation')
 
@@ -34,6 +41,16 @@ class User (db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
 
+    
+    @validates('email')
+    def validate_email_format(self, key, email):
+        pattern = r"[^@]+@[^@]+\.[^@]+"
+        assert re.match(pattern, email), "Invalid email format"
+        return email
+    @validates('password')
+    def validate_password(self, key, password):
+        assert len(password) >= 8
+        return password
 
     observations = relationship("Observation", back_populates="user")
     discussions = relationship("Discussion", back_populates="user")
