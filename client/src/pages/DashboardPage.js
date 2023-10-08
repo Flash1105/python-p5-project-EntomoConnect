@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const DashboardPage = () => {
   const [observations, setObservations] = useState([]);
   const [discussions, setDiscussions] = useState([]);
 
+  const location = useLocation();
+
   useEffect(() => {
-
-  }, []);
-
+    fetchObservations();
+    fetchDiscussions();
+  }, [location.state]);
+  
   const fetchObservations = async () => {
     try {
       const response = await fetch('/api/observations');
@@ -16,7 +19,7 @@ const DashboardPage = () => {
         const data = await response.json();
         setObservations(data);
       } else {
-        // Handle error
+        
       }
     } catch (error) {
       console.error('Error fetching observations:', error);
