@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 function DiscussionForm() {
     const [content, setContent] = useState('');
@@ -46,6 +47,7 @@ function DiscussionForm() {
                 </div>
                 <button type="submit">Submit</button>
             </form>
+            <Link to="/dashboard">Back to Dashboard</Link>
         </div>
     );
 }
