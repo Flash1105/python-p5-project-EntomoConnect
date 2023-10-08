@@ -2,17 +2,22 @@ import React, { useState } from 'react';
 
 function DiscussionForm() {
     const [content, setContent] = useState('');
+    const [userId, setUserId] = useState(1);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        const discussionData = {
+            userId: userId,
+            content: content,
+    }
         try {
             const response = await fetch('/api/discussions', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ content }),
+                body: JSON.stringify({ discussionData }),
             });
 
             if (response.status === 201) {
