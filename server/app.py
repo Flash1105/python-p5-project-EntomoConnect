@@ -8,7 +8,7 @@ from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
-CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 app.config.from_object(Config)
 
 db.init_app(app)
@@ -137,7 +137,7 @@ def create_discussion():
         return jsonify({'error': 'No input data provided'}), 400
     
     content = data.get('content')
-
+    
     if not content:
         return jsonify({'error': 'Content is required'}), 400
 
