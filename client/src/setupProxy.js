@@ -4,14 +4,14 @@ module.exports = function (app) {
     app.use( 
         '/api/observations',
         createProxyMiddleware({
-            target: 'http://127.0.0.1:5555/api/observations',
+            target: 'http://127.0.0.1:5555/',
             changeOrigin: true,
         })
     );
     app.use( 
         '/api/discussions',
         createProxyMiddleware({
-            target:  'http://127.0.0.1:5555/api/discussions',
+            target:  'http://127.0.0.1:5555/',
             changeOrigin: true,
         })
     );
