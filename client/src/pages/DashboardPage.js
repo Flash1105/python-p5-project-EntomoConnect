@@ -1,17 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useHistory } from 'react-router-dom';
 
 const DashboardPage = () => {
   const [observations, setObservations] = useState([]);
   const [discussions, setDiscussions] = useState([]);
+  const[isLoggedIn, setIsLoggedIn] = useState(true);
 
   const location = useLocation();
+  const history = useHistory();
 
   useEffect(() => {
     fetchObservations();
     fetchDiscussions();
+    setIsLoggedIn(location.state?.isLoggedIn || true);
   }, [location.state]);
-  
+
+  const handleLogout = () => {
+      
+    setIsLoggedIn(false);
+    history.push('/');
+  };
+
   const fetchObservations = async () => {
     try {
       const response = await fetch('/api/observations');
@@ -25,7 +34,7 @@ const DashboardPage = () => {
       console.error('Error fetching observations:', error);
     }
   };
-
+    
   const fetchDiscussions = async () => {
     try {
       const response = await fetch('/api/discussions');
@@ -42,10 +51,18 @@ const DashboardPage = () => {
 
   return (
     <div>
+        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
       <h1>Welcome </h1>
+      {isLoggedIn && (
+        <Link to ="/">
+          <button onClick={handleLogout}>Logout</button>
+        </Link>
+        
+      )}
+      </div>
       <div>
         <h2>Observations.  this is where observations will be present</h2>
-        <Link to="/observations-form">
+        <Link to="/">
           <button>Add New Observation</button>
         </Link>
         {observations.map((observation) => (
