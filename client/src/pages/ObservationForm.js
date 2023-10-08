@@ -7,12 +7,23 @@ function ObservationForm() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-
+    const [successMessage, setSuccessMessage] = useState('');
+    
     const history = useHistory();
     const handleSubmit = async (e) => {
         e.preventDefault();
         
         setErrorMessage('');
+        setSuccessMessage('');
+
+        if (title === '') {
+            setErrorMessage('Title is required');
+            return;
+        }
+        if (content === '') {
+            setErrorMessage('Content is required');
+            return;
+        }
         const observationData = {
             title: title,
             content: content,
@@ -48,15 +59,20 @@ function ObservationForm() {
             <h2>Create a New Observation</h2>
             <form onSubmit={handleSubmit}>
                 <div>
+                    <label html For="title">Title</label>
                     <input
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        placeholder="Title of observation"
-                        required
-                    />
-                </div>
-                <div>    
+                    id="title"
+                    type="text"                    
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="Title of observation"
+                    required
+                />
+             </div>
+            <div>    
+                <label htmlFor="content">Content</label>
                     <textarea
+                        id="content"
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
                         placeholder="Post your observation here!"
@@ -65,6 +81,8 @@ function ObservationForm() {
                 </div>
                 <button type="submit">Submit</button>
             </form>
+            {errorMessage && <p className="error">{errorMessage}</p>}
+            {successMessage && <p className="success">{successMessage}</p>}
             <Link to="/dashboard">Back to Dashboard</Link>
         </div>
     );
