@@ -1,14 +1,16 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, redirect
 from config import Config
 from flask_migrate import Migrate
 from extensions import db
 from models import User, Observation, Discussion
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 app = Flask(__name__)
+app.wsgi_app = ProxyFix(app.wsgi_app)
 bcrypt = Bcrypt(app)
-CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
+CORS(app)
 app.config.from_object(Config)
 
 db.init_app(app)
@@ -58,6 +60,10 @@ def login():
         return jsonify({'message': 'Logged in successfully'}), 200
     else:
         return jsonify({'error': 'Incorrect username or password'}), 401
+
+@app.route('/logout')
+def logout():
+    return redirect('/')
 
 @app.route('/api/observations', methods=['POST'])
 def create_observation():
