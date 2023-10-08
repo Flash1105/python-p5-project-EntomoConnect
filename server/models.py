@@ -13,7 +13,7 @@ class Observation(db.Model):
     title = db.Column(db.String(255), nullable=False)
     content = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
 
     @validates('title')
     def validate_title_type(self, key, title):
@@ -29,8 +29,8 @@ class Discussion(db.Model):
     content = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    user_id = db.Column(db.Integer, ForeignKey('user.id'), nullable=False)
-    observation_id = db.Column(db.Integer, ForeignKey('observation.id'), nullable=False)
+    user_id = db.Column(db.Integer, ForeignKey('user.id'), nullable=True)
+    observation_id = db.Column(db.Integer, ForeignKey('observation.id'), nullable=True)
     user = db.relationship("User", back_populates="discussions", primaryjoin= lambda: User.id==Discussion.user_id)
     likes = db.relationship('Like', back_populates='discussion')
 
