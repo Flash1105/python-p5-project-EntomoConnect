@@ -6,6 +6,7 @@ import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
 import DiscussionForm from './pages/DiscussionForm';
 import ObservationForm from './pages/ObservationForm';
+import LogoutPage from './pages/LogoutPage';
 
 const App = () => {
   return (
@@ -16,6 +17,11 @@ const App = () => {
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/discussions-form" component={DiscussionForm} />
       <Route path="/observations-form" component={ObservationForm} />
+      <Route path ="/dashboard/:newObservation" component={Dashboard} />
+      <Route path ="/dashboard/:newDiscussion" component={Dashboard} />
+      <Route path="/dashboard/:newObservation/:newDiscussion" component={Dashboard} />
+      <Route path ="/dashboard/:newObservation/:newDiscussion/:newDiscussion" component={Dashboard} />
+      <Route path="/logout" component={LogoutPage} />
     </Router>
   );
 };
