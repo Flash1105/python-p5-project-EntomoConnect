@@ -16,6 +16,9 @@ app.config.from_object(Config)
 db.init_app(app)
 migrate = Migrate(app, db)
 
+@app.route('/')
+def root():
+    return 'Welcome to the EntomoConnect server'
 
 @app.route('/api/register', methods=['POST'])
 def register():
@@ -143,18 +146,21 @@ def create_discussion():
         return jsonify({'error': 'No input data provided'}), 400
     
     content = data.get('content')
-    
     if not content:
         return jsonify({'error': 'Content is required'}), 400
 
-    new_discussion = Discussion(content=content)
+    observation_id = data.get('observation_id', None)  
+    new_discussion = Discussion(content=content, observation_id=observation_id)
+    
     db.session.add(new_discussion)
     db.session.commit()
 
     return jsonify({'message': 'Discussion created successfully', 'discussion': {
         'id': new_discussion.id,
-        'content': new_discussion.content
+        'content': new_discussion.content,
+        'observation_id': new_discussion.observation_id
     }}), 201
+
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
