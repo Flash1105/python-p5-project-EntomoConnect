@@ -6,12 +6,13 @@ import { useHistory } from 'react-router-dom';
 function ObservationForm() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    
+    const [errorMessage, setErrorMessage] = useState('');
 
     const history = useHistory();
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        
+        setErrorMessage('');
         const observationData = {
             title: title,
             content: content,
@@ -23,7 +24,7 @@ function ObservationForm() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify( observationData ),
+                body: JSON.stringify(observationData),
             });
 
             if (response.status === 201) {
