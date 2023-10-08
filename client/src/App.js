@@ -14,13 +14,10 @@ const App = () => {
       <Route path="/" exact component={HomePage} />
       <Route path="/register" component={RegisterPage} />
       <Route path="/login" component={LoginPage} />
-      <Route path="/dashboard" component={Dashboard} />
+      <Route path="/dashboard" exact component={Dashboard} />
+      <Route path="/dashboard/:newObservation/:newDiscussion" component={Dashboard} />
       <Route path="/discussions-form" component={DiscussionForm} />
       <Route path="/observations-form" component={ObservationForm} />
-      <Route path ="/dashboard/:newObservation" component={Dashboard} />
-      <Route path ="/dashboard/:newDiscussion" component={Dashboard} />
-      <Route path="/dashboard/:newObservation/:newDiscussion" component={Dashboard} />
-      <Route path ="/dashboard/:newObservation/:newDiscussion/:newDiscussion" component={Dashboard} />
       <Route path="/logout" component={LogoutPage} />
     </Router>
   );
