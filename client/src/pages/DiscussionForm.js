@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 function DiscussionForm() {
     const [content, setContent] = useState('');
-    const [userId, setUserId] = useState(1);
+    const [userId] = useState(1);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
