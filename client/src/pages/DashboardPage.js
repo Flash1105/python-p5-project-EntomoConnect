@@ -4,7 +4,7 @@ import { Link, useLocation, useHistory } from 'react-router-dom';
 const DashboardPage = () => {
   const [observations, setObservations] = useState([]);
   const [discussions, setDiscussions] = useState([]);
-  const[isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   const location = useLocation();
   const history = useHistory();
@@ -54,7 +54,7 @@ const DashboardPage = () => {
         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
       <h1>Welcome </h1>
       {isLoggedIn && (
-        <Link to ="/">
+        <Link to ="/LogoutPage">
           <button onClick={handleLogout}>Logout</button>
         </Link>
         
@@ -62,7 +62,7 @@ const DashboardPage = () => {
       </div>
       <div>
         <h2>Observations.  this is where observations will be present</h2>
-        <Link to="/">
+        <Link to="/observations-form">
           <button>Add New Observation</button>
         </Link>
         {observations.map((observation) => (
