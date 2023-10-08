@@ -1,29 +1,35 @@
 import React, { useState } from 'react';
 
-
-function DiscussionForm () {
+function DiscussionForm() {
     const [content, setContent] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const response = await fetch('/api/discussions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ content }),
-        });
+        try {
+            const response = await fetch('/api/discussions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ content }),
+            });
 
-        if (response.ok) {
-
-        } else {
+            if (response.status === 201) {
+                console.log('Discussion created successfully');
+              
+                setContent('');
+            } else {
+                console.error('There was an error creating the discussion');
+            }
+        } catch (error) {
+            console.error('There was an error', error);
         }
     };
 
     return (
         <div>
-            <h2> Create a New Discussion</h2>
+            <h2>Create a New Discussion</h2>
             <form onSubmit={handleSubmit}>
                 <div>
                     <textarea
@@ -32,11 +38,12 @@ function DiscussionForm () {
                         placeholder="Write your discussion here"
                         required
                     ></textarea>
-        </div>
-        <button type="submit">Submit</button>
+                </div>
+                <button type="submit">Submit</button>
             </form>
         </div>
-    )
+    );
 }
 
 export default DiscussionForm;
+
