@@ -5,7 +5,7 @@ const LogoutPage = () => {
     const history = useHistory();
 
     useEffect(() => {
-        history.push('/HomePage');
+        history.push('/');
     }, [history]);
 
     return (
