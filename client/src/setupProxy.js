@@ -5,6 +5,9 @@ module.exports = function (app) {
         '/api/observations',
         createProxyMiddleware({
             target: 'http://127.0.0.1:5555/',
+            pathRewrite: {
+                '^/api/observations': '/api/observations',
+            },
             changeOrigin: true,
         })
     );
@@ -12,6 +15,9 @@ module.exports = function (app) {
         '/api/discussions',
         createProxyMiddleware({
             target:  'http://127.0.0.1:5555/',
+            pathRewrite: {
+                '^/api/discussions': '/api/discussions',
+            },
             changeOrigin: true,
         })
     );
