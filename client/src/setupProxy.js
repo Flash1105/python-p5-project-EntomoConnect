@@ -21,4 +21,17 @@ module.exports = function (app) {
             changeOrigin: true,
         })
     );
+    
+    app.use(
+        '/api/login',
+        createProxyMiddleware({
+            target: 'http://127.0.0.1:5555/',
+            pathRewrite: {
+                '^/api/login': '/api/login',
+            },
+            changeOrigin: true,
+        })
+    )
+
 };
+
