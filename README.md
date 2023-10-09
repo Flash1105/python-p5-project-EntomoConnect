@@ -118,3 +118,6 @@ Contributions are welcome! If you'd like to contribute to this project, please f
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+
+this program is still in developent and will be actively worked on.
