@@ -146,12 +146,19 @@ def create_discussion():
         return jsonify({'error': 'No input data provided'}), 400
     
     content = data.get('content')
+
     if not content:
         return jsonify({'error': 'Content is required'}), 400
 
-    observation_id = data.get('observation_id', None)  
+    latest_observation = Observation.query.order_by(Observation.id.desc()).first()
+
+    if latest_observation:
+        observation_id = latest_observation.id
+    else:
+        return jsonify({'error': 'No observations found. Create the first observation'}), 400
+
     new_discussion = Discussion(content=content, observation_id=observation_id)
-    
+   
     db.session.add(new_discussion)
     db.session.commit()
 
