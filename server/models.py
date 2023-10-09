@@ -1,7 +1,7 @@
 from datetime import datetime
 from extensions import db
 from sqlalchemy import ForeignKey, PrimaryKeyConstraint
-from sqlalchemy.orm import relationship, validates
+from sqlalchemy.orm import  validates
 import re
 
 class Observation(db.Model):
@@ -46,7 +46,7 @@ class User(db.Model):
 
     @validates('password')
     def validate_password(self, key, password):
-        assert len(password) >= 8
+        assert len(password) >= 3, "Password must be at least 3 characters"
         return password
 
     observations = db.relationship('Observation', back_populates='user')
