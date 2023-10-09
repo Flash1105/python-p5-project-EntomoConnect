@@ -11,19 +11,18 @@ function DiscussionForm() {
         const discussionData = {
             userId: userId,
             content: content,
-    }
+        };
         try {
-            const response = await fetch('/api/discussions', {
+            const response = await fetch('http://127.0.0.1:5555/api/discussions', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ discussionData }),
+                body: JSON.stringify(discussionData),
             });
 
             if (response.status === 201) {
                 console.log('Discussion created successfully');
-              
                 setContent('');
             } else {
                 console.error('There was an error creating the discussion');
