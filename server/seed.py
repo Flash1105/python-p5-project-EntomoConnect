@@ -1,10 +1,10 @@
 from app import app
 from extensions import db
-from models import User, Observation, Discussion
+from models import User, Observation
 
 def add_users():
-    user1 = User(username='user1', email='user1', password='user1')
-    user2 = User(username='user2', email='user2', password='user2')
+    user1 = User(username='user1', email='user1@user1.com', password='user1')
+    user2 = User(username='user2', email='user2@user2.com', password='user2')
 
     db.session.add(user1)
     db.session.add(user2)
