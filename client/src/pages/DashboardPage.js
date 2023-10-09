@@ -13,12 +13,11 @@ const DashboardPage = () => {
     fetchObservations();
     fetchDiscussions();
     setIsLoggedIn(location.state?.isLoggedIn || true);
-
   }, [history, location.state?.isLoggedIn]);
-  
+
   const searchParams = new URLSearchParams(location.search);
   if (searchParams.get('newObservation') === 'true' || searchParams.get('newDiscussion') === 'true') {
-    history.replace ('/dashboard');
+    history.replace('/dashboard');
   }
 
   const handleLogout = () => {
@@ -39,7 +38,7 @@ const DashboardPage = () => {
       console.error('Error fetching observations:', error);
     }
   };
-    
+
   const fetchDiscussions = async () => {
     try {
       const response = await fetch(`http://127.0.0.1:5555/api/discussions`);
@@ -54,18 +53,37 @@ const DashboardPage = () => {
     }
   };
 
+  const handleDeleteObservation = async (observationId) => {
+    try {
+      const response = await fetch(`http://127.0.0.1:5555/api/observations/${observationId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.status === 204) {
+        
+        setObservations((prevObservations) =>
+          prevObservations.filter((observation) => observation.id !== observationId)
+        );
+      } else {
+        console.error('Error deleting observation:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error deleting observation:', error);
+    }
+  };
+
   return (
     <div>
-        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-      <h1>Welcome </h1>
-      {isLoggedIn && (
-        <Link to ="/LogoutPage">
-          <button onClick={handleLogout}>Logout</button>
-        </Link>
-      )}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h1>Welcome</h1>
+        {isLoggedIn && (
+          <Link to="/LogoutPage">
+            <button onClick={handleLogout}>Logout</button>
+          </Link>
+        )}
       </div>
       <div>
-        <h2>Observations.  this is where observations will be submitted</h2>
+        <h2>Observations. this is where observations will be submitted</h2>
         <Link to="/observations-form">
           <button>Add New Observation</button>
         </Link>
@@ -73,18 +91,19 @@ const DashboardPage = () => {
           <div key={observation.id}>
             <h3>{observation.title}</h3>
             <p>{observation.content}</p>
-            <Link 
-            to={`/edit-observation/${observation.id}?content=${encodeURIComponent(
-                observation.content
-            )}`}
-            >
-                <button>Edit Observation</button>
-            </Link>    
+            {isLoggedIn && (
+              <div>
+                <Link to={`/edit-observation/${observation.id}`}>
+                  <button>Edit Observation</button>
+                </Link>
+                <button onClick={() => handleDeleteObservation(observation.id)}>Delete Observation</button>
+              </div>
+            )}
           </div>
         ))}
       </div>
       <div>
-        <h2>Discussions.  this is where you can write comments</h2>
+        <h2>Discussions. this is where you can write comments</h2>
         <Link to="/discussions-form">
           <button>Add New Discussion</button>
         </Link>
