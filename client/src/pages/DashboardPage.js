@@ -77,7 +77,7 @@ const DashboardPage = () => {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h1>Welcome</h1>
         {isLoggedIn && (
-          <Link to="/LogoutPage">
+          <Link to="/">
             <button onClick={handleLogout}>Logout</button>
           </Link>
         )}
