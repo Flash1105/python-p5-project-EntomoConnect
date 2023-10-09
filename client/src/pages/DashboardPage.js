@@ -16,27 +16,24 @@ const DashboardPage = () => {
 
   }, [history, location.state?.isLoggedIn]);
   
-    const searchParams = new URLSearchParams(location.search);
-    if (searchParams.get('newObservation') === 'true' || searchParams.get('newDiscussion') === 'true') {
-      history.replace ('/dashboard');
-    }
-
-   
+  const searchParams = new URLSearchParams(location.search);
+  if (searchParams.get('newObservation') === 'true' || searchParams.get('newDiscussion') === 'true') {
+    history.replace ('/dashboard');
+  }
 
   const handleLogout = () => {
-      
     setIsLoggedIn(false);
     history.push('/');
   };
 
   const fetchObservations = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:5555/api/observations');
+      const response = await fetch(`http://127.0.0.1:5555/api/observations`);
       if (response.ok) {
         const data = await response.json();
         setObservations(data);
       } else {
-        
+        // Handle error
       }
     } catch (error) {
       console.error('Error fetching observations:', error);
@@ -45,7 +42,7 @@ const DashboardPage = () => {
     
   const fetchDiscussions = async () => {
     try {
-      const response = await fetch('/http://127.0.0.1:5555/api/discussions');
+      const response = await fetch(`http://127.0.0.1:5555/api/discussions`);
       if (response.ok) {
         const data = await response.json();
         setDiscussions(data);
@@ -65,7 +62,6 @@ const DashboardPage = () => {
         <Link to ="/LogoutPage">
           <button onClick={handleLogout}>Logout</button>
         </Link>
-        
       )}
       </div>
       <div>
@@ -77,9 +73,15 @@ const DashboardPage = () => {
           <div key={observation.id}>
             <h3>{observation.title}</h3>
             <p>{observation.content}</p>
+            <Link 
+            to={`/edit-observation/${observation.id}?content=${encodeURIComponent(
+                observation.content
+            )}`}
+            >
+                <button>Edit Observation</button>
+            </Link>    
           </div>
         ))}
-          
       </div>
       <div>
         <h2>Discussions.  this is where you can write comments</h2>
