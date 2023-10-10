@@ -2,14 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 
 function EditObservationPage() {
+  //retrieve observation ID 
   const { id } = useParams();
   const history = useHistory();
 
+  //state for form
   const [observation, setObservation] = useState({
     title: '',
     content: '',
   });
 
+  //fetch observation
   useEffect(() => {
     fetch(`http://127.0.0.1:5555/api/observations/${id}`)
       .then((response) => response.json())
@@ -17,6 +20,7 @@ function EditObservationPage() {
       .catch((error) => console.error('Error fetching observation:', error));
   }, [id]);
 
+  //update observation
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
@@ -28,7 +32,7 @@ function EditObservationPage() {
         },
         body: JSON.stringify(observation),
       });
-
+// if observation update successful, redirect to dashboard
       if (response.status === 200) {
         history.push('/dashboard');
       } else {
@@ -39,6 +43,7 @@ function EditObservationPage() {
     }
   };
 
+  //render
   return (
     <div>
       <h2>Edit Observation</h2>

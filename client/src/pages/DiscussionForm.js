@@ -5,13 +5,17 @@ function DiscussionForm() {
     const [content, setContent] = useState('');
     const [userId] = useState(1);
 
+    // handle form submissions
     const handleSubmit = async (e) => {
+        // prevent default form behavior 
         e.preventDefault();
 
+        // construct discussion data
         const discussionData = {
             userId: userId,
             content: content,
         };
+         // post discussion to backend 
         try {
             const response = await fetch('http://127.0.0.1:5555/api/discussions', {
                 method: 'POST',
@@ -22,6 +26,7 @@ function DiscussionForm() {
             });
 
             if (response.status === 201) {
+                // clear text area after successful submit  
                 console.log('Discussion created successfully');
                 setContent('');
             } else {
@@ -32,6 +37,7 @@ function DiscussionForm() {
         }
     };
 
+    // render 
     return (
         <div>
             <h2>Create a New Discussion</h2>

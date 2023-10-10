@@ -3,9 +3,11 @@ import { useFormik } from 'formik';
 import { useHistory } from 'react-router-dom';
 
 const LoginPage = () => {
+    // local state for handling error
     const [error, setError] = useState('');
+    // hook to  navigate
     const history = useHistory();
-
+// setting up formik for foorm state management
     const formik = useFormik({
         initialValues: {
             username: '',
@@ -13,7 +15,7 @@ const LoginPage = () => {
         },
         onSubmit: async (values) => {
             try {
-            
+            // api call for login
                 const response = await fetch('/api/login', {
                     method: 'POST',
                     headers: {
@@ -21,7 +23,7 @@ const LoginPage = () => {
                     },
                     body: JSON.stringify(values),
                 });
-
+                // successfull login lead to dashboard
                 if (response.status === 200) {
                     history.push('/dashboard');
                 } else {
@@ -34,6 +36,7 @@ const LoginPage = () => {
         },
     });
 
+    //render login form
     return (
         <div>
             <h1>Login</h1>

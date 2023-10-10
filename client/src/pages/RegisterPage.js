@@ -5,11 +5,13 @@ import { useHistory } from 'react-router-dom';
 
 const validate = values => {
     const errors = {};
+    //username validation
     if (!values.username) {
         errors.username = 'Required';
     } else if(typeof values.username !== 'string') {
         errors.username = 'Must be a string'
     }
+    //email validation
     if (!values.email) {
         errors.email = 'Required';
     } else if (
@@ -17,6 +19,7 @@ const validate = values => {
     ) {
         errors.email = 'Invalid email address';
     }
+    // password validation
     if (!values.password) {
         errors.password = 'Required';
     }
@@ -37,6 +40,8 @@ const RegisterPage = () => {
             password: '',
             confirmPassword:''
         },
+        // assiging the above validation function
+
         validate,
         onSubmit: async values => {
             try {
@@ -49,6 +54,7 @@ const RegisterPage = () => {
                 });
                 const data = await response.json();
 
+                // check respose status
                 if(response.ok) {
                     console.log(data.message);
                     setMessage("User created successfully");
@@ -65,10 +71,12 @@ const RegisterPage = () => {
         }
 });
 
+// navigate back to home
 const goBack = () => {
     history.push('/')
 };
 
+// render 
     return (
         <div>
             <form onSubmit={formik.handleSubmit}>

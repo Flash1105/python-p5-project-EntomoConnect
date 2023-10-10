@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useHistory } from 'react-router-dom';
 
 const DashboardPage = () => {
+  // Hooks
   const [observations, setObservations] = useState([]);
   const [discussions, setDiscussions] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
@@ -9,22 +10,26 @@ const DashboardPage = () => {
   const location = useLocation();
   const history = useHistory();
 
+  // fetch for component mount
   useEffect(() => {
     fetchObservations();
     fetchDiscussions();
     setIsLoggedIn(location.state?.isLoggedIn || true);
   }, [history, location.state?.isLoggedIn]);
 
+  // checks URL for flags and updates when needed
   const searchParams = new URLSearchParams(location.search);
   if (searchParams.get('newObservation') === 'true' || searchParams.get('newDiscussion') === 'true') {
     history.replace('/dashboard');
   }
 
+  // logout handler
   const handleLogout = () => {
     setIsLoggedIn(false);
     history.push('/');
   };
 
+  // fetch obsevations from backend
   const fetchObservations = async () => {
     try {
       const response = await fetch(`http://127.0.0.1:5555/api/observations`);
@@ -39,6 +44,7 @@ const DashboardPage = () => {
     }
   };
 
+  // fetch discussions from backend
   const fetchDiscussions = async () => {
     try {
       const response = await fetch(`http://127.0.0.1:5555/api/discussions`);
@@ -53,6 +59,7 @@ const DashboardPage = () => {
     }
   };
 
+  // delete specific observations
   const handleDeleteObservation = async (observationId) => {
     try {
       const response = await fetch(`http://127.0.0.1:5555/api/observations/${observationId}`, {
@@ -61,6 +68,7 @@ const DashboardPage = () => {
 
       if (response.status === 204) {
         
+        // remove deleted observation from list
         setObservations((prevObservations) =>
           prevObservations.filter((observation) => observation.id !== observationId)
         );
@@ -72,6 +80,7 @@ const DashboardPage = () => {
     }
   };
 
+  // render dashboard
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

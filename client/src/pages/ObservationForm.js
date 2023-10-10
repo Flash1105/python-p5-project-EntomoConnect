@@ -3,18 +3,21 @@ import { Link, useHistory } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 
 function ObservationForm() {
+    //hooks for fields and messages
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
-
+    // hook to access current location and history for navigation
     const location = useLocation();
     const history = useHistory();
 
+    // check URL for flags and update when needed
     const queryParams = new URLSearchParams(location.search);
     const observationIdParam = queryParams.get('id') || '';
     const contentParam = queryParams.get('content');
 
+    // fetch observation data
     useEffect(() => {
         if (observationIdParam) {
             setTitle(`Edit Observation ${observationIdParam}`);
@@ -25,12 +28,14 @@ function ObservationForm() {
         }
     }, [observationIdParam, contentParam]);
 
+    // handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        //reset messages
         setErrorMessage('');
         setSuccessMessage('');
-
+// basic form validation
         if (title === '') {
             setErrorMessage('Title is required');
             return;
@@ -48,6 +53,7 @@ function ObservationForm() {
         try {
             let response;
 
+            // create new observation
             if (observationIdParam) {
                 response = await fetch(`http://127.0.0.1:5555/api/observations/${observationIdParam}`, {
                     method: 'PUT',
@@ -66,6 +72,7 @@ function ObservationForm() {
                 });
             }
            
+            // hande different server responses
             if (response.status === 200 || response.status === 201) {
                 const message = observationIdParam ? 'Observation updated successfully' : 'Observation created successfully';
                 console.log(message);
@@ -85,6 +92,7 @@ function ObservationForm() {
         }
     };
 
+    // render
     return (
         <div>
             <h2>{observationIdParam ? 'Edit Observation' : 'Create a New Observation'}</h2>
