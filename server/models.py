@@ -4,6 +4,7 @@ from sqlalchemy import ForeignKey, PrimaryKeyConstraint
 from sqlalchemy.orm import  validates
 import re
 
+# Define models
 class Observation(db.Model):
     __tablename__ = 'observation'
     id = db.Column(db.Integer, primary_key=True)
@@ -20,6 +21,7 @@ class Observation(db.Model):
     user = db.relationship("User", back_populates="observations")
     likes = db.relationship('Like', back_populates='observation')
 
+# Define Discussion
 class Discussion(db.Model):
     __tablename__ = 'discussion'
     id = db.Column(db.Integer, primary_key=True)
@@ -31,6 +33,7 @@ class Discussion(db.Model):
 
     user = db.relationship("User", back_populates="discussions")
 
+# Define User
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
@@ -38,12 +41,14 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
 
+    # validate emails
     @validates('email')
     def validate_email_format(self, key, email):
         pattern = r"[^@]+@[^@]+\.[^@]+"
         assert re.match(pattern, email), "Invalid email format"
         return email
 
+    # validate passwords
     @validates('password')
     def validate_password(self, key, password):
         assert len(password) >= 3, "Password must be at least 3 characters"
@@ -53,6 +58,7 @@ class User(db.Model):
     discussions = db.relationship('Discussion', back_populates='user')
     likes = db.relationship('Like', back_populates='user')
 
+# Define Like
 class Like(db.Model):
     __tablename__ = 'like'
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)

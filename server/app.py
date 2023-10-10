@@ -8,6 +8,7 @@ from flask_bcrypt import Bcrypt
 from werkzeug.middleware.proxy_fix import ProxyFix
 from flask_login import LoginManager, login_required
 
+# Initialize flask
 app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app)
 bcrypt = Bcrypt(app)
@@ -19,14 +20,17 @@ login_manager = LoginManager(app)
 db.init_app(app)
 migrate = Migrate(app, db)
 
+# Load user
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+# Define homepage
 @app.route('/')
 def root():
     return 'Welcome to the EntomoConnect server'
 
+# Define register
 @app.route('/api/register', methods=['POST'])
 def register():
     data = request.json 
@@ -54,6 +58,7 @@ def register():
 
     return jsonify({'message': 'User created successfully'}), 201
 
+# Define login
 @app.route('/api/login', methods=['POST'])
 def login():
     data = request.json
@@ -71,11 +76,12 @@ def login():
     else:
         return jsonify({'error': 'Incorrect username or password'}), 401
 
+# Define logout
 @app.route('/logout')
 def logout():
     return redirect('/')
 
-
+# Define create observation
 @app.route('/api/observations', methods=['POST'])
 @login_required
 def create_observation():
@@ -99,6 +105,7 @@ def create_observation():
         'content': new_observation.content
     }}), 201
 
+# Define get observations
 @app.route('/api/observations', methods=['GET'])
 def get_observations():
     try:
@@ -108,7 +115,8 @@ def get_observations():
     except Exception as e:
         print("Error getting observations", str(e))
         return jsonify({"error": "Server error while retrieving observations"}), 500
-    
+
+# Define get observation
 @app.route('/api/observations/<int:id>', methods=['GET'])
 def get_observation(id):
     observation = Observation.query.filter_by(id=id).first()
@@ -120,6 +128,7 @@ def get_observation(id):
         'content': observation.content
         }), 200
 
+# Define update observation
 @app.route('/api/observations/<int:id>', methods=['PUT', 'PATCH'])
 @login_required
 def update_observation(id):
@@ -142,6 +151,7 @@ def update_observation(id):
         'content': observation.content
     }}), 200
 
+# Define delete observation
 @app.route('/api/observations/<int:id>', methods=['DELETE'])
 @login_required
 def delete_observation(id): 
@@ -155,6 +165,7 @@ def delete_observation(id):
 
     return jsonify({'message': 'Observation deleted successfully'}), 204
 
+# Define create discussion
 @app.route('/api/discussions', methods=['GET'])
 def get_discussions():
     try:
@@ -165,6 +176,7 @@ def get_discussions():
         print("Error getting discussions", str(e))
         return jsonify({"error": "Server error while retrieving discussions"}), 500
 
+# Define create discussion
 @app.route('/api/discussions', methods=['POST'])
 @login_required
 def create_discussion():
@@ -194,7 +206,6 @@ def create_discussion():
         'content': new_discussion.content,
         'observation_id': new_discussion.observation_id
     }}), 201
-
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
