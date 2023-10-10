@@ -6,15 +6,22 @@ from models import User, Observation, Discussion
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 from werkzeug.middleware.proxy_fix import ProxyFix
+from flask_login import LoginManager, login_required
 
 app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app)
 bcrypt = Bcrypt(app)
-CORS(app)
+CORS(app, RESOURCES={r"/api/*": {"origins": "*"}})
 app.config.from_object(Config)
+login_manager = LoginManager(app)
+
 
 db.init_app(app)
 migrate = Migrate(app, db)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 @app.route('/')
 def root():
@@ -68,7 +75,9 @@ def login():
 def logout():
     return redirect('/')
 
+
 @app.route('/api/observations', methods=['POST'])
+@login_required
 def create_observation():
     data = request.json
     if not data:
@@ -99,8 +108,20 @@ def get_observations():
     except Exception as e:
         print("Error getting observations", str(e))
         return jsonify({"error": "Server error while retrieving observations"}), 500
+    
+@app.route('/api/observations/<int:id>', methods=['GET'])
+def get_observation(id):
+    observation = Observation.query.filter_by(id=id).first()
+    if not observation:
+        return jsonify({'error': 'Observation not found'}), 404
+    return jsonify({
+        'id': observation.id,
+        'title': observation.title,
+        'content': observation.content
+        }), 200
 
 @app.route('/api/observations/<int:id>', methods=['PUT', 'PATCH'])
+@login_required
 def update_observation(id):
     data = request.json
     observation = Observation.query.get(id)
@@ -122,6 +143,7 @@ def update_observation(id):
     }}), 200
 
 @app.route('/api/observations/<int:id>', methods=['DELETE'])
+@login_required
 def delete_observation(id): 
     observation = Observation.query.get(id)
 
@@ -135,11 +157,16 @@ def delete_observation(id):
 
 @app.route('/api/discussions', methods=['GET'])
 def get_discussions():
-    discussions = Discussion.query.all()
-    discussion_data = [{"id": discussion.id, "content": discussion.content} for discussion in discussions]
-    return jsonify(discussion_data)
+    try:
+        discussions = Discussion.query.all()
+        discussion_data = [{"id": discussion.id, "content": discussion.content} for discussion in discussions]
+        return jsonify(discussion_data)
+    except Exception as e:
+        print("Error getting discussions", str(e))
+        return jsonify({"error": "Server error while retrieving discussions"}), 500
 
 @app.route('/api/discussions', methods=['POST'])
+@login_required
 def create_discussion():
     data = request.json
     if not data:
