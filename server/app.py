@@ -6,7 +6,7 @@ from models import User, Observation, Discussion
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 from werkzeug.middleware.proxy_fix import ProxyFix
-from flask_login import LoginManager, login_required
+from flask_login import LoginManager, login_required, login_user
 
 # Initialize flask
 app = Flask(__name__)
@@ -72,6 +72,7 @@ def login():
     user = User.query.filter_by(username=username).first()
 
     if user and bcrypt.check_password_hash(user.password, password):
+        login_user(user)
         return jsonify({'message': 'Logged in successfully'}), 200
     else:
         return jsonify({'error': 'Incorrect username or password'}), 401
