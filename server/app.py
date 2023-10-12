@@ -6,7 +6,7 @@ from models import User, Observation, Discussion
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 from werkzeug.middleware.proxy_fix import ProxyFix
-from flask_login import LoginManager, login_required, login_user
+from flask_login import LoginManager, login_required, login_user, current_user
 
 # Initialize flask
 app = Flask(__name__)
@@ -15,7 +15,6 @@ bcrypt = Bcrypt(app)
 CORS(app, RESOURCES={r"/api/*": {"origins": "*"}})
 app.config.from_object(Config)
 login_manager = LoginManager(app)
-
 
 db.init_app(app)
 migrate = Migrate(app, db)
@@ -133,24 +132,43 @@ def get_observation(id):
 @app.route('/api/observations/<int:id>', methods=['PUT', 'PATCH'])
 @login_required
 def update_observation(id):
-    data = request.json
     observation = Observation.query.get(id)
 
     if not observation:
         return jsonify({'error': 'Observation not found'}), 404
     
-    if 'title' in data: 
+    data = request.json
+
+    if not data:
+        return jsonify({'error': 'No input data provided'}), 400
+    if 'title' in data and not data['title']:
+        return jsonify({'error': 'Title is required'}), 400
+    if 'content' in data and not data['content']:
+        return jsonify({'error': 'Content cannot be empty'}), 400
+    
+    current_user_id = current_user.id  
+    if observation.user_id != int(current_user_id):
+        return jsonify({'error': 'You are not authorized to update this observation'}), 401
+    
+    if 'title' in data:
         observation.title = data['title']
-    if 'content' in data:  
+    if 'content' in data:
         observation.content = data['content']
 
-    db.session.commit()
+        try: 
+            db.session.commit()
+            return jsonify({
+                'message': 'Observation updated successfully',
+                'observation': {
+                    'id': observation.id,
+                    'title': observation.title,
+                    'content': observation.content
+                }
+            }),
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'error': 'An error has occurred while updating the observation'}), 500
 
-    return jsonify({'message': 'Observation updated successfully', 'observation': {
-        'id': observation.id,
-        'title': observation.title,
-        'content': observation.content
-    }}), 200
 
 # Define delete observation
 @app.route('/api/observations/<int:id>', methods=['DELETE'])
