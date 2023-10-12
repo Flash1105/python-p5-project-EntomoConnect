@@ -83,7 +83,7 @@ def logout():
 
 # Define create observation
 @app.route('/api/observations', methods=['POST'])
-@login_required
+
 def create_observation():
     data = request.json
     if not data:
@@ -130,7 +130,7 @@ def get_observation(id):
 
 # Define update observation
 @app.route('/api/observations/<int:id>', methods=['PUT', 'PATCH'])
-@login_required
+
 def update_observation(id):
     observation = Observation.query.get(id)
 
@@ -172,7 +172,7 @@ def update_observation(id):
 
 # Define delete observation
 @app.route('/api/observations/<int:id>', methods=['DELETE'])
-@login_required
+
 def delete_observation(id): 
     observation = Observation.query.get(id)
 
@@ -197,7 +197,7 @@ def get_discussions():
 
 # Define create discussion
 @app.route('/api/discussions', methods=['POST'])
-@login_required
+
 def create_discussion():
     data = request.json
     if not data:
