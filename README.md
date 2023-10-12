@@ -113,7 +113,7 @@ Users can create new discussions, view discussions, and like discussions.
 
 ## Contributing
 
-Contributions are welcome! If you'd like to contribute to this project, please follow the guidelines outlined in the CONTRIBUTING.md file.
+Contributions are welcome! If you'd like to contribute to this project, please request a pull!
 
 ## License
 
